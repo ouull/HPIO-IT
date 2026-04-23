@@ -5,6 +5,7 @@ import { Spotlight } from "@/components/ui/Spotlight";
 import { Navbar } from "@/components/Navbar";
 import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 import { ImageCarousel } from "@/components/ui/ImageCarousel";
+import { InternshipTimeline } from "@/components/InternshipTimeline";
 import { ArrowRight, Monitor, Server, Wrench, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
@@ -424,8 +425,11 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Internship Timeline Area */}
+      <InternshipTimeline />
+
       {/* Footer */}
-      <footer className="py-8 border-t border-white/10 text-center text-zinc-500 text-sm">
+      <footer className="py-8 border-t border-white/10 text-center text-zinc-500 text-sm bg-black-main">
         <p>&copy; {new Date().getFullYear()} IT O&M HPIO PT KCIC. All rights reserved.</p>
       </footer>
     </main>

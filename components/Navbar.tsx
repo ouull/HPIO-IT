@@ -42,10 +42,11 @@ export function Navbar() {
         
         <div className="hidden md:flex items-center gap-8 font-medium">
           {[
-            { label: "Home", href: "#hero" },
-            { label: "About Us", href: "#about" },
-            { label: "Works", href: "#works" },
-            { label: "Structure", href: "#structure" }
+            { label: "Home", href: "/" },
+            { label: "About Us", href: "/#about" },
+            { label: "Works", href: "/#works" },
+            { label: "Structure", href: "/#structure" },
+            { label: "Our Story", href: "/our-story" }
           ].map((item) => (
             <Link 
               key={item.label}
