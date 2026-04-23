@@ -64,10 +64,10 @@ export const StickyScroll = ({
       animate={{
         backgroundColor: backgroundColors[activeCard % backgroundColors.length],
       }}
-      className="relative flex flex-col lg:flex-row h-[35rem] w-full items-center lg:items-start justify-start lg:justify-center gap-6 lg:gap-12 overflow-y-auto p-6 lg:p-10 rounded-3xl shadow-2xl border border-white/5 scrollbar-hide"
+      className="relative flex h-[35rem] w-full items-start justify-center space-x-12 overflow-y-auto p-6 md:p-10 rounded-3xl shadow-2xl border border-white/5 scrollbar-hide"
       ref={ref}
     >
-      <div className="relative flex items-start w-full lg:w-1/2 px-0 lg:px-4 order-2 lg:order-1">
+      <div className="relative flex items-start w-full lg:w-1/2 px-0 md:px-4">
         <div className="max-w-lg w-full">
           {content.map((item, index) => (
             <div key={item.title + index} className="mb-24 lg:my-32">
@@ -85,6 +85,11 @@ export const StickyScroll = ({
               >
                 {item.description}
               </motion.p>
+
+              {/* Mobile Static Content (Hidden on Desktop) */}
+              <div className="block lg:hidden mt-8 w-full h-[18rem] md:h-[22rem] rounded-xl overflow-hidden shadow-2xl border border-white/10">
+                {item.content ?? null}
+              </div>
             </div>
           ))}
           <div className="h-24 lg:h-40" />
@@ -93,7 +98,7 @@ export const StickyScroll = ({
       <div
         style={{ background: backgroundGradient }}
         className={cn(
-          "sticky top-0 lg:top-10 flex h-[16rem] sm:h-[20rem] lg:h-[28rem] w-full lg:w-[32rem] items-center justify-center overflow-hidden rounded-2xl bg-black shadow-2xl border border-white/10 shrink-0 order-1 lg:order-2 z-50",
+          "sticky top-10 hidden lg:flex h-[28rem] w-[32rem] items-center justify-center overflow-hidden rounded-2xl bg-black shadow-2xl border border-white/10 shrink-0",
           contentClassName,
         )}
       >
