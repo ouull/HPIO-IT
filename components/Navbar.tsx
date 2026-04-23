@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 export function Navbar() {
-  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -20,10 +18,6 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const isPublic = !pathname.startsWith("/dashboard");
-
-  if (!isPublic) return null;
 
   return (
     <motion.nav 
@@ -65,17 +59,6 @@ export function Navbar() {
               {item.label}
             </Link>
           ))}
-          
-          <Link 
-            href="/login" 
-            className={`px-6 py-2.5 rounded-full transition-all duration-300 font-semibold shadow-lg hover:-translate-y-0.5 ${
-              isScrolled 
-                ? "bg-black-main text-white hover:bg-blue-primary hover:shadow-blue-primary/30" 
-                : "bg-white text-black-main hover:bg-blue-primary hover:text-white hover:shadow-blue-primary/30"
-            }`}
-          >
-            Login
-          </Link>
         </div>
       </div>
     </motion.nav>
