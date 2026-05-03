@@ -33,32 +33,36 @@ export const ImageCarousel = ({ images }: { images: string[] }) => {
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
 
       {/* Navigation Controls */}
-      <div className="absolute inset-0 flex items-center justify-between p-2 md:p-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
-        <button
-          onClick={prevSlide}
-          className="p-2 md:p-3 rounded-full bg-black/60 text-white hover:bg-blue-primary backdrop-blur-md shadow-lg transition-all pointer-events-auto active:scale-95"
-        >
-          <ChevronLeft size={24} />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="p-2 md:p-3 rounded-full bg-black/60 text-white hover:bg-blue-primary backdrop-blur-md shadow-lg transition-all pointer-events-auto active:scale-95"
-        >
-          <ChevronRight size={24} />
-        </button>
-      </div>
+      {images.length > 1 && (
+        <div className="absolute inset-0 flex items-center justify-between p-2 md:p-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
+          <button
+            onClick={prevSlide}
+            className="p-2 md:p-3 rounded-full bg-black/60 text-white hover:bg-blue-primary backdrop-blur-md shadow-lg transition-all pointer-events-auto active:scale-95"
+          >
+            <ChevronLeft size={24} />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="p-2 md:p-3 rounded-full bg-black/60 text-white hover:bg-blue-primary backdrop-blur-md shadow-lg transition-all pointer-events-auto active:scale-95"
+          >
+            <ChevronRight size={24} />
+          </button>
+        </div>
+      )}
 
       {/* Indicators */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10 pointer-events-none">
-        {images.map((_, idx) => (
-          <div
-            key={idx}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              idx === currentIndex ? "bg-blue-primary w-6" : "bg-white/40 w-2"
-            }`}
-          />
-        ))}
-      </div>
+      {images.length > 1 && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10 pointer-events-none">
+          {images.map((_, idx) => (
+            <div
+              key={idx}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                idx === currentIndex ? "bg-blue-primary w-6" : "bg-white/40 w-2"
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

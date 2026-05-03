@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { ImageCarousel } from "@/components/ui/ImageCarousel";
+import { getData } from "@/services/fetchData";
 
 // Data Sejarah Proyek Departemen
-const departmentStories = [
+const fallbackStories = [
   {
     year: "Februari 2023",
     title: "Inisiasi Departemen IT O&M",
@@ -45,6 +47,21 @@ const departmentStories = [
 ];
 
 export default function OurStoryPage() {
+  const [storiesData, setStoriesData] = useState<any>(null);
+
+  // Fetch stories from API
+  getData("api/get-stories", setStoriesData);
+
+  // Map API data if available, otherwise use fallback
+  const displayStories = storiesData?.stories?.length > 0
+    ? storiesData.stories.map((s: any) => ({
+        year: s.time,
+        title: s.title,
+        description: s.description,
+        documentation: s.images?.map((img: any) => `http://localhost:8000/storage/${img.image_path}`) || []
+      }))
+    : fallbackStories;
+
   return (
     <main className="min-h-screen bg-black-main text-white selection:bg-blue-primary/30 pb-20">
       <Navbar />
@@ -75,7 +92,7 @@ export default function OurStoryPage() {
         <div className="absolute left-6 md:left-1/2 top-4 bottom-0 w-[2px] bg-gradient-to-b from-blue-primary/60 via-blue-primary/20 to-transparent -translate-x-[1px] md:-translate-x-1/2" />
 
         <div className="space-y-24 md:space-y-32 relative">
-          {departmentStories.map((story, idx) => (
+          {displayStories.map((story: any, idx: number) => (
             <div 
               key={idx} 
               className={`relative flex flex-col md:flex-row items-center md:items-stretch gap-8 md:gap-0 ${
@@ -135,3 +152,4 @@ export default function OurStoryPage() {
     </main>
   );
 }
+

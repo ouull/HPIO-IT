@@ -1,8 +1,9 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { getData } from "@/services/fetchData";
 
-const timelineData = [
+const staticTimelineData = [
   {
     batch: "Batch 1",
     year: "Agustus 2023 - Januari 2024",
@@ -29,6 +30,26 @@ const timelineData = [
 ];
 
 export const InternshipTimeline = () => {
+  const [internsData, setInternsData] = useState<any[]>([]);
+
+  // Fetch intern data from API
+  getData("api/get-interns", setInternsData);
+
+  // Map API data or fallback to static data
+  const timelineData = internsData.length > 0 
+    ? internsData.map((item: any) => ({
+        batch: `Batch ${item.Batch}`,
+        year: `${item.start_date} - ${item.end_date}`,
+        title: item.achievement_title,
+        description: item.achievement_description,
+        interns: item.members?.map((member: any) => ({
+          name: member.name,
+          role: member.job_desk,
+          image: member.image ? `http://localhost:8000/storage/${member.image}` : "https://i.pravatar.cc/150?img=60"
+        })) || []
+      }))
+    : staticTimelineData;
+
   return (
     <section className="py-24 bg-zinc-50 relative overflow-hidden" id="internship">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -93,7 +114,7 @@ export const InternshipTimeline = () => {
                   <div className="space-y-4">
                     <h4 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider">Anggota Tim:</h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {item.interns.map((intern, i) => (
+                      {item.interns.map((intern: any, i: number) => (
                         <div key={i} className="flex items-center gap-3 p-3 rounded-2xl bg-zinc-50 border border-zinc-100 hover:border-blue-primary/30 transition-colors">
                           <img src={intern.image} alt={intern.name} className="w-10 h-10 rounded-full object-cover shadow-sm" />
                           <div>
@@ -114,3 +135,4 @@ export const InternshipTimeline = () => {
     </section>
   );
 };
+

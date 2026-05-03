@@ -1,15 +1,37 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+
 import { Spotlight } from "@/components/ui/Spotlight";
 import { Navbar } from "@/components/Navbar";
 import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 import { ImageCarousel } from "@/components/ui/ImageCarousel";
 import { InternshipTimeline } from "@/components/InternshipTimeline";
-import { ArrowRight, Monitor, Server, Wrench, ShieldCheck } from "lucide-react";
+import * as LucideIcons from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { getData } from "@/services/fetchData"
 import Link from "next/link";
 
 export default function LandingPage() {
+
+  const [userData, setUserData] = useState<any>(null);
+  const [content, setContent] = useState<any>(null);
+  const [worksData, setWorksData] = useState<any>(null);
+
+  //get user data for structure of company
+  getData("api/get-users", setUserData);
+  //get landing content
+  getData("api/get-landing-content", setContent);
+  //get works portfolio
+  getData("api/get-works", setWorksData);
+
+  // Defaults if content not loaded yet
+  const heroTitle = content?.hero_title || "IT Operations & Maintenance HPIO KCIC";
+  const heroSubtitle = content?.hero_subtitle || "Memastikan keandalan sistem dan infrastruktur IT stasiun Kereta Cepat Jakarta-Bandung demi kelancaran operasional setiap hari.";
+  const heroCtaPrimary = content?.hero_cta_primary || "Masuk ke Sistem";
+  const heroCtaSecondary = content?.hero_cta_secondary || "Pelajari Lebih Lanjut";
+
   return (
     <main className="min-h-screen bg-black-main text-white selection:bg-blue-primary/30">
       <Navbar />
@@ -25,27 +47,24 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
-                IT Operations & Maintenance <br />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-primary to-blue-300">
-                  HPIO KCIC
-                </span>
+              <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 whitespace-pre-line">
+                {content?.hero_title}
               </h1>
               <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto mb-10">
-                Memastikan keandalan sistem dan infrastruktur IT stasiun Kereta Cepat Jakarta-Bandung demi kelancaran operasional setiap hari.
+                {content?.hero_subtitle}
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link 
-                  href="/login" 
+                <Link
+                  href="/login"
                   className="px-8 py-3 rounded-full bg-blue-primary text-black-main font-semibold hover:bg-blue-400 transition-colors flex items-center gap-2"
                 >
-                  Masuk ke Sistem <ArrowRight size={18} />
+                  {heroCtaPrimary} <ArrowRight size={18} />
                 </Link>
-                <Link 
-                  href="#about" 
+                <Link
+                  href="#about"
                   className="px-8 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium transition-colors backdrop-blur-sm"
                 >
-                  Pelajari Lebih Lanjut
+                  {heroCtaSecondary}
                 </Link>
               </div>
             </motion.div>
@@ -58,28 +77,30 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-blue-primary/5 mix-blend-overlay pointer-events-none" />
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="flex flex-col lg:flex-row items-center gap-16">
-            
+
             {/* Left Content */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
               className="lg:w-1/2"
             >
-              <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight uppercase">About Us</h2>
+              <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight uppercase">
+                {content?.about_title || 'About Us'}
+              </h2>
               <div className="space-y-6 text-zinc-400 text-lg leading-relaxed">
                 <p>
-                  HPIO serves as the critical nervous system of PT KCIC, engineered to ensure 24/7 reliability for high-speed rail operations. We do not just maintain systems; we guarantee uptime in an environment where milliseconds matter.
+                  {content?.about_items[0]?.description || 'HPIO serves as the critical nervous system of PT KCIC, engineered to ensure 24/7 reliability for high-speed rail operations. We do not just maintain systems; we guarantee uptime in an environment where milliseconds matter.'}
                 </p>
                 <p>
-                  Our operational mandate focuses on proactive monitoring, instantaneous anomaly detection, and rapid deployment of technical resolutions across all command and control layers.
+                  {content?.about_items[0]?.description || 'Our operational mandate focuses on proactive monitoring, instantaneous anomaly detection, and rapid deployment of technical resolutions across all command and control layers.'}
                 </p>
               </div>
             </motion.div>
 
             {/* Right Content - Server visual with Terminal */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -88,18 +109,18 @@ export default function LandingPage() {
             >
               <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-zinc-900 group shadow-2xl">
                 <div className="absolute inset-0 bg-blue-primary/10 mix-blend-overlay z-10 transition-colors duration-500 group-hover:bg-blue-primary/20"></div>
-                
-                <img 
-                  src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1200&auto=format&fit=crop" 
-                  alt="Server Racks" 
+
+                <img
+                  src={content?.about_image}
+                  alt="Server Racks"
                   className="w-full h-[400px] object-cover grayscale opacity-70 transition-transform duration-700 group-hover:scale-105"
                 />
 
                 {/* Terminal Overlay */}
                 <div className="absolute bottom-6 left-6 right-6 bg-black/80 backdrop-blur-md border border-white/10 rounded-xl p-5 z-20 font-mono text-xs md:text-sm shadow-2xl">
                   <div className="space-y-1.5">
-                    <p className="text-blue-primary font-semibold">&gt; UPTIME_VERIFICATION: <span className="text-white font-bold ml-1">NOMINAL</span></p>
-                    <p className="text-blue-primary font-semibold">&gt; NETWORK_LATENCY: <span className="text-white font-bold ml-1">1.2ms</span></p>
+                    <p className="text-blue-primary font-semibold">&gt; UPTIME_VERIFICATION: <span className="text-white font-bold ml-1">{content?.terminal_uptime || 'NOMINAL'}</span></p>
+                    <p className="text-blue-primary font-semibold">&gt; NETWORK_LATENCY: <span className="text-white font-bold ml-1">{content?.terminal_latency || '1.2ms'}</span></p>
                     <p className="text-zinc-500 flex items-center">&gt; AWAITING_COMMAND<span className="w-2 h-4 bg-zinc-500 ml-1 animate-pulse" /></p>
                   </div>
                 </div>
@@ -115,32 +136,30 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-primary/5 via-transparent to-transparent pointer-events-none"></div>
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Core Responsibilities</h2>
-            <p className="text-zinc-400 max-w-2xl mx-auto">Kami berdedikasi untuk menjaga perfoma sistem IT agar operasional perjalanan Kereta Cepat selalu dalam kondisi prima.</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">{content?.services_title || 'Core Responsibilities'}</h2>
+            <p className="text-zinc-400 max-w-2xl mx-auto">{content?.services_subtitle || 'Kami berdedikasi untuk menjaga perfoma sistem IT agar operasional perjalanan Kereta Cepat selalu dalam kondisi prima.'}</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: <Monitor size={32} />, title: "Sistem Maintenance", desc: "Pemeliharaan rutin perangkat IT stasiun (TVM, Gate, dll)" },
-              { icon: <Server size={32} />, title: "Monitoring", desc: "Pemantauan real-time terhadap infrastruktur jaringan & server" },
-              { icon: <Wrench size={32} />, title: "Troubleshooting", desc: "Penanganan cepat terhadap kendala sistem dan hardware" },
-              { icon: <ShieldCheck size={32} />, title: "Operasional Support", desc: "Dukungan IT penuh untuk kelancaran tim HPIO" }
-            ].map((item, idx) => (
-              <motion.div 
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="p-6 rounded-2xl bg-zinc-900 border border-white/5 hover:border-blue-primary/50 transition-colors group"
-              >
-                <div className="w-14 h-14 rounded-full bg-blue-primary/10 flex items-center justify-center text-blue-primary mb-6 group-hover:scale-110 transition-transform">
-                  {item.icon}
-                </div>
-                <h3 className="text-xl font-semibold mb-3">{item.title}</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">{item.desc}</p>
-              </motion.div>
-            ))}
+            {content?.services_items?.map((item: any, idx: number) => {
+              const Icon = (LucideIcons as any)[item.logo];
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="p-6 rounded-2xl bg-zinc-900 border border-white/5 hover:border-blue-primary/50 transition-colors group"
+                >
+                  <div className="w-14 h-14 rounded-full bg-blue-primary/10 flex items-center justify-center text-blue-primary mb-6 group-hover:scale-110 transition-transform">
+                    {Icon ? <Icon size={28} /> : <LucideIcons.HelpCircle size={28} />}
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">{item.title}</h3>
+                  <p className="text-zinc-400 text-sm leading-relaxed">{item.desc}</p>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -148,60 +167,87 @@ export default function LandingPage() {
       {/* Karya & Hasil Operasional (Sticky Scroll Reveal) */}
       <section id="works" className="pt-24 pb-64 md:pb-80 bg-gradient-to-b from-[#030d14] via-black-main to-[#05171f] overflow-hidden border-t border-white/5 relative">
         <div className="max-w-7xl mx-auto px-6 mb-16 text-center">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">Hasil Pekerjaan & Kegiatan</h2>
-          <p className="text-zinc-400 max-w-2xl mx-auto text-lg">Dokumentasi nyata kegiatan kami berserta deskripsi dari portofolio operasional di lapangan.</p>
+          <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">{content?.works_title || 'Hasil Pekerjaan & Kegiatan'}</h2>
+          <p className="text-zinc-400 max-w-2xl mx-auto text-lg">{content?.works_subtitle || 'Dokumentasi nyata kegiatan kami berserta deskripsi dari portofolio operasional di lapangan.'}</p>
         </div>
         <div className="max-w-6xl mx-auto px-6">
-          <StickyScroll content={[
-            {
-              title: "Pemeliharaan TVM & Gate Stasiun",
-              description:
-                "Tim HPIO melakukan pemeliharaan berkala pada perangkat layar sentuh, sistem pencetak, dan mekanisme pembayaran pada Ticket Vending Machine (TVM). Kami juga memastikan keakuratan sensor pada Automatic Fare Collection (AFC) Gate agar arus masuk-keluar penumpang di stasiun berjalan cepat tanpa latensi.",
-              content: (
-                <ImageCarousel images={[
-                  "https://images.unsplash.com/photo-1591035882672-0050e0f316bf?q=80&w=1000&auto=format&fit=crop",
-                  "https://images.unsplash.com/photo-1586769852044-692d6e3703f0?q=80&w=1000&auto=format&fit=crop",
-                  "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop"
-                ]} />
-              ),
-            },
-            {
-              title: "Network & Server Optimization",
-              description:
-                "Mengelola lalu lintas data operasional kereta yang sangat padat, tim kami melakukan peningkatan kapasitas (upgrade) infrastruktur jaringan fiber optic dan switch core stasiun secara rutin. Semua rack server dikonfigurasi ulang untuk mencegah downtime.",
-              content: (
-                <ImageCarousel images={[
-                  "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1000&auto=format&fit=crop",
-                  "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=1000&auto=format&fit=crop",
-                  "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop"
-                ]} />
-              ),
-            },
-            {
-              title: "24/7 Command Center Monitoring",
-              description:
-                "Sistem HPIO memantau metrik kesehatan (health check) setiap node jaringan mulai dari Halim hingga Tegalluar selama 24 jam penuh. Command Center ini bertugas merespons traffic spike dan anomali data sebelum tereskalasi menjadi isu serius pada sistem ticketing.",
-              content: (
-                <ImageCarousel images={[
-                  "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop",
-                  "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=1000&auto=format&fit=crop",
-                  "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1000&auto=format&fit=crop"
-                ]} />
-              ),
-            },
-            {
-              title: "Rapid Troubleshooting di Lapangan",
-              description:
-                "Dalam skenario sistem kritis, Tim Ranger bersiaga untuk penggelaran pemulihan hardware langsung di lapangan (on-site). Dari penggantian modul hingga instalasi kabel, setiap respons darurat dieksekusi dengan SLA untuk mengamankan Recovery Time Objective (RTO).",
-              content: (
-                <ImageCarousel images={[
-                  "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=1000&auto=format&fit=crop",
-                  "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=1000&auto=format&fit=crop",
-                  "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop"
-                ]} />
-              ),
-            },
-          ]} />
+          <StickyScroll content={
+            (() => {
+              // Priority 1: worksData (Structured table)
+              if (worksData && Array.isArray(worksData) && worksData.length > 0) {
+                return worksData.map((work: any) => ({
+                  title: work.title,
+                  description: work.description,
+                  content: (
+                    <ImageCarousel images={work.images?.map((img: any) => `http://localhost:8000/storage/${img.image_path}`) || []} />
+                  ),
+                }));
+              }
+
+              // Priority 2: content.works_items (JSON fallback)
+              let items = [
+                {
+                  title: "Pemeliharaan TVM & Gate Stasiun",
+                  description:
+                    "Tim HPIO melakukan pemeliharaan berkala pada perangkat layar sentuh, sistem pencetak, dan mekanisme pembayaran pada Ticket Vending Machine (TVM). Kami juga memastikan keakuratan sensor pada Automatic Fare Collection (AFC) Gate agar arus masuk-keluar penumpang di stasiun berjalan cepat tanpa latensi.",
+                  images: [
+                    "https://images.unsplash.com/photo-1591035882672-0050e0f316bf?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1586769852044-692d6e3703f0?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop"
+                  ]
+                },
+                {
+                  title: "Network & Server Optimization",
+                  description:
+                    "Mengelola lalu lintas data operasional kereta yang sangat padat, tim kami melakukan peningkatan kapasitas (upgrade) infrastruktur jaringan fiber optic dan switch core stasiun secara rutin. Semua rack server dikonfigurasi ulang untuk mencegah downtime.",
+                  images: [
+                    "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop"
+                  ]
+                },
+                {
+                  title: "24/7 Command Center Monitoring",
+                  description:
+                    "Sistem HPIO memantau metrik kesehatan (health check) setiap node jaringan mulai dari Halim hingga Tegalluar selama 24 jam penuh. Command Center ini bertugas merespons traffic spike dan anomali data sebelum tereskalasi menjadi isu serius pada sistem ticketing.",
+                  images: [
+                    "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1000&auto=format&fit=crop"
+                  ]
+                },
+                {
+                  title: "Rapid Troubleshooting di Lapangan",
+                  description:
+                    "Dalam skenario sistem kritis, Tim Ranger bersiaga untuk penggelaran pemulihan hardware langsung di lapangan (on-site). Dari penggantian modul hingga instalasi kabel, setiap respons darurat dieksekusi dengan SLA untuk mengamankan Recovery Time Objective (RTO).",
+                  images: [
+                    "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop"
+                  ]
+                }
+              ];
+
+              if (content?.works_items) {
+                try {
+                  const parsed = typeof content.works_items === 'string'
+                    ? JSON.parse(content.works_items)
+                    : content.works_items;
+                  if (Array.isArray(parsed) && parsed.length > 0) {
+                    items = parsed;
+                  }
+                } catch (e) { }
+              }
+
+              return items.map((item: any) => ({
+                title: item.title,
+                description: item.description,
+                content: (
+                  <ImageCarousel images={item.images || []} />
+                ),
+              }));
+            })()
+          } />
         </div>
 
         {/* Wave Shape Divider */}
@@ -223,7 +269,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex flex-col items-center gap-16 max-w-6xl mx-auto relative">
-            
+
             {/* --- HPIO SECTION DIVIDER --- */}
             <div className="w-full mb-4 relative">
               <div className="absolute inset-0 flex items-center" aria-hidden="true">
@@ -236,31 +282,31 @@ export default function LandingPage() {
 
             {/* 1. Manager */}
             <div className="relative flex justify-center w-full">
-              {[
-                { role: "Manager", name: "Muhammad Syaiful Ramadhan", title: "IT O&M Manager", image: "https://i.pravatar.cc/150?img=11" }
-              ].map((person, idx) => (
-                <motion.div
-                  key={`mgr-${idx}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="p-[1px] rounded-3xl bg-gradient-to-b from-blue-primary/40 to-blue-primary/10 w-72 z-10 hover:shadow-xl transition-all duration-300 group cursor-pointer"
-                >
-                  <div className="bg-white rounded-[1.4rem] p-8 h-full border border-blue-primary/20 flex flex-col items-center text-center shadow-sm relative overflow-hidden">
-                    <div className="absolute top-0 w-full h-1/3 bg-blue-primary/5 rounded-t-[1.4rem]"></div>
-                    <div className="relative w-32 h-32 mb-6">
-                      <img 
-                        src={person.image} 
-                        alt={person.name}
-                        className="w-full h-full object-cover rounded-full border-4 border-white shadow-lg transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-4 group-hover:shadow-[0_10px_40px_rgba(86,196,189,0.3)] relative z-20"
-                      />
+              {(userData || [])
+                .filter((u: any) => u.team === 'internal' && u.role?.toLowerCase() === 'manager')
+                .map((person: any, idx: number) => (
+                  <motion.div
+                    key={`mgr-${person.name}-${idx}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="p-[1px] rounded-3xl bg-gradient-to-b from-blue-primary/40 to-blue-primary/10 w-72 z-10 hover:shadow-xl transition-all duration-300 group cursor-pointer"
+                  >
+                    <div className="bg-white rounded-[1.4rem] p-8 h-full border border-blue-primary/20 flex flex-col items-center text-center shadow-sm relative overflow-hidden">
+                      <div className="absolute top-0 w-full h-1/3 bg-blue-primary/5 rounded-t-[1.4rem]"></div>
+                      <div className="relative w-32 h-32 mb-6">
+                        <img
+                          src={person.foto_profile ? `http://localhost:8000/storage/${person.foto_profile}` : "https://i.pravatar.cc/150?img=11"}
+                          alt={person.name}
+                          className="w-full h-full object-cover rounded-full border-4 border-white shadow-lg transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-4 group-hover:shadow-[0_10px_40px_rgba(86,196,189,0.3)] relative z-20"
+                        />
+                      </div>
+                      <span className="text-blue-primary text-sm font-semibold uppercase tracking-wider mb-2 relative z-10">{person.role || 'Manager'}</span>
+                      <h4 className="text-xl font-bold mb-1 text-black-main relative z-10">{person.name}</h4>
+                      <p className="text-sm text-zinc-500 relative z-10">{person.description_profile || ''}</p>
                     </div>
-                    <span className="text-blue-primary text-sm font-semibold uppercase tracking-wider mb-2 relative z-10">{person.role}</span>
-                    <h4 className="text-xl font-bold mb-1 text-black-main relative z-10">{person.name}</h4>
-                    <p className="text-sm text-zinc-500 relative z-10">{person.title}</p>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))}
             </div>
 
             {/* Connecting Line (Optional Desktop) */}
@@ -268,66 +314,60 @@ export default function LandingPage() {
 
             {/* 2. Team Leaders */}
             <div className="relative flex flex-wrap justify-center gap-6 md:gap-10 w-full">
-              {[
-                { role: "Team Leader", name: "Zandhy Pratama", title: "Halim & Karawang Leader", image: "https://i.pravatar.cc/150?img=18" },
-                { role: "Team Leader", name: "Muhammad Faishal Affianto", title: "Padalarang & Tegalluar Leader", image: "https://i.pravatar.cc/150?img=14" },
-                { role: "Team Leader", name: "Yhozigma Harra Ramanda", title: "501 Leader", image: "https://i.pravatar.cc/150?img=33" }
-              ].map((person, idx) => (
-                <motion.div
-                  key={`tl-${idx}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 * idx }}
-                  className="p-[1px] rounded-3xl bg-gradient-to-b from-blue-primary/20 to-zinc-200 w-60 z-10 hover:shadow-lg transition-all duration-300 group cursor-pointer"
-                >
-                  <div className="bg-zinc-50 rounded-[1.4rem] p-6 h-full border border-white flex flex-col items-center text-center shadow-sm relative overflow-hidden group-hover:bg-white group-hover:border-blue-primary/30 transition-colors">
-                    <div className="relative w-24 h-24 mb-5">
-                      <img 
-                        src={person.image} 
-                        alt={person.name}
-                        className="w-full h-full object-cover rounded-full border-4 border-white shadow-md transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-3 group-hover:border-blue-primary/10 group-hover:shadow-[0_10px_30px_rgba(86,196,189,0.2)] relative z-20"
-                      />
+              {(userData || [])
+                .filter((u: any) => u.team === 'internal' && u.role?.toLowerCase() === 'team leader')
+                .map((person: any, idx: number) => (
+                  <motion.div
+                    key={`tl-${person.name}-${idx}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.1 * idx }}
+                    className="p-[1px] rounded-3xl bg-gradient-to-b from-blue-primary/20 to-zinc-200 w-60 z-10 hover:shadow-lg transition-all duration-300 group cursor-pointer"
+                  >
+                    <div className="bg-zinc-50 rounded-[1.4rem] p-6 h-full border border-white flex flex-col items-center text-center shadow-sm relative overflow-hidden group-hover:bg-white group-hover:border-blue-primary/30 transition-colors">
+                      <div className="relative w-24 h-24 mb-5">
+                        <img
+                          src={person.foto_profile ? `http://localhost:8000/storage/${person.foto_profile}` : "https://i.pravatar.cc/150?img=14"}
+                          alt={person.name}
+                          className="w-full h-full object-cover rounded-full border-4 border-white shadow-md transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-3 group-hover:border-blue-primary/10 group-hover:shadow-[0_10px_30px_rgba(86,196,189,0.2)] relative z-20"
+                        />
+                      </div>
+                      <span className="text-blue-dark text-xs font-semibold uppercase tracking-wider mb-2">{person.role || 'Team Leader'}</span>
+                      <h4 className="text-lg font-bold mb-1 text-black-main">{person.name}</h4>
+                      <p className="text-xs text-zinc-500">{person.description_profile || ''}</p>
                     </div>
-                    <span className="text-blue-dark text-xs font-semibold uppercase tracking-wider mb-2">{person.role}</span>
-                    <h4 className="text-lg font-bold mb-1 text-black-main">{person.name}</h4>
-                    <p className="text-xs text-zinc-500">{person.title}</p>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))}
             </div>
 
             {/* 3. Rangers */}
             <div className="relative flex flex-wrap justify-center gap-4 md:gap-8 w-full mt-6">
-              {[
-                { role: "Ranger", name: "Tsany", title: "Ranger", image: "https://i.pravatar.cc/150?img=8" },
-                { role: "Ranger", name: "Avian", title: "Ranger", image: "https://i.pravatar.cc/150?img=15" },
-                { role: "Ranger", name: "Rabby", title: "Ranger", image: "https://i.pravatar.cc/150?img=55" },
-                { role: "Ranger", name: "Urwah", title: "Ranger", image: "https://i.pravatar.cc/150?img=59" },
-                { role: "Ranger", name: "Fadel", title: "Ranger", image: "https://i.pravatar.cc/150?img=60" }
-              ].map((person, idx) => (
-                <motion.div
-                  key={`rng-${idx}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 + (0.1 * idx) }}
-                  className="p-[1px] rounded-2xl bg-zinc-200 hover:bg-gradient-to-b hover:from-blue-primary/20 hover:to-zinc-200 w-48 z-10 transition-all duration-300 group cursor-pointer"
-                >
-                  <div className="bg-white rounded-[1rem] p-5 h-full border border-white flex flex-col items-center text-center shadow-sm group-hover:border-blue-primary/20 transition-colors">
-                    <div className="relative w-20 h-20 mb-4">
-                      <img 
-                        src={person.image} 
-                        alt={person.name}
-                        className="w-full h-full object-cover rounded-full border-4 border-zinc-100 shadow-sm transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-2 group-hover:border-white group-hover:shadow-[0_10px_20px_rgba(86,196,189,0.15)] relative z-20"
-                      />
+              {(userData || [])
+                .filter((u: any) => u.team === 'internal' && u.role?.toLowerCase() === 'ranger')
+                .map((person: any, idx: number) => (
+                  <motion.div
+                    key={`rng-${person.name}-${idx}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.2 + (0.1 * idx) }}
+                    className="p-[1px] rounded-2xl bg-zinc-200 hover:bg-gradient-to-b hover:from-blue-primary/20 hover:to-zinc-200 w-48 z-10 transition-all duration-300 group cursor-pointer"
+                  >
+                    <div className="bg-white rounded-[1rem] p-5 h-full border border-white flex flex-col items-center text-center shadow-sm group-hover:border-blue-primary/20 transition-colors">
+                      <div className="relative w-20 h-20 mb-4">
+                        <img
+                          src={person.foto_profile ? `http://localhost:8000/storage/${person.foto_profile}` : "https://i.pravatar.cc/150?img=60"}
+                          alt={person.name}
+                          className="w-full h-full object-cover rounded-full border-4 border-zinc-100 shadow-sm transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-2 group-hover:border-white group-hover:shadow-[0_10px_20px_rgba(86,196,189,0.15)] relative z-20"
+                        />
+                      </div>
+                      <span className="text-zinc-500 text-[10px] font-semibold uppercase tracking-wider mb-1">{person.role || 'Ranger'}</span>
+                      <h4 className="text-base font-bold mb-1 text-black-main">{person.name}</h4>
+                      <p className="text-xs text-zinc-500">{person.description_profile || ''}</p>
                     </div>
-                    <span className="text-zinc-500 text-[10px] font-semibold uppercase tracking-wider mb-1">{person.role}</span>
-                    <h4 className="text-base font-bold mb-1 text-black-main">{person.name}</h4>
-                    <p className="text-xs text-zinc-500">{person.title}</p>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))}
             </div>
 
             {/* --- CNJO SECTION DIVIDER --- */}
@@ -342,34 +382,34 @@ export default function LandingPage() {
 
             {/* Tim CNJO Content */}
             <div className="flex flex-col items-center gap-16 w-full relative">
-              
+
               {/* 1. Project Manager */}
               <div className="relative flex justify-center w-full">
-                {[
-                  { role: "Project Manager", name: "Project Manager", title: "Project Manager CNJO", image: "https://i.pravatar.cc/150?img=12" }
-                ].map((person, idx) => (
-                  <motion.div
-                    key={`cnjo-pm-${idx}`}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="p-[1px] rounded-3xl bg-gradient-to-b from-blue-primary/40 to-blue-primary/10 w-72 z-10 hover:shadow-xl transition-all duration-300 group cursor-pointer"
-                  >
-                    <div className="bg-white rounded-[1.4rem] p-8 h-full border border-blue-primary/20 flex flex-col items-center text-center shadow-sm relative overflow-hidden">
-                      <div className="absolute top-0 w-full h-1/3 bg-blue-primary/5 rounded-t-[1.4rem]"></div>
-                      <div className="relative w-32 h-32 mb-6">
-                        <img 
-                          src={person.image} 
-                          alt={person.name}
-                          className="w-full h-full object-cover rounded-full border-4 border-white shadow-lg transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-4 group-hover:shadow-[0_10px_40px_rgba(86,196,189,0.3)] relative z-20"
-                        />
+                {(userData || [])
+                  .filter((u: any) => u.team === 'cnjo' && u.role === 'PROJECT MANAGER CNJO')
+                  .map((person: any, idx: number) => (
+                    <motion.div
+                      key={`cnjo-pm-${person.name}-${idx}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      className="p-[1px] rounded-3xl bg-gradient-to-b from-blue-primary/40 to-blue-primary/10 w-72 z-10 hover:shadow-xl transition-all duration-300 group cursor-pointer"
+                    >
+                      <div className="bg-white rounded-[1.4rem] p-8 h-full border border-blue-primary/20 flex flex-col items-center text-center shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 w-full h-1/3 bg-blue-primary/5 rounded-t-[1.4rem]"></div>
+                        <div className="relative w-32 h-32 mb-6">
+                          <img
+                            src={person.foto_profile ? `http://localhost:8000/storage/${person.foto_profile}` : "https://i.pravatar.cc/150?img=12"}
+                            alt={person.name}
+                            className="w-full h-full object-cover rounded-full border-4 border-white shadow-lg transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-4 group-hover:shadow-[0_10px_40px_rgba(86,196,189,0.3)] relative z-20"
+                          />
+                        </div>
+                        <span className="text-blue-primary text-sm font-semibold uppercase tracking-wider mb-2 relative z-10">{person.role || 'Project Manager'}</span>
+                        <h4 className="text-xl font-bold mb-1 text-black-main relative z-10">{person.name}</h4>
+                        <p className="text-sm text-zinc-500 relative z-10">{person.description_profile || ''}</p>
                       </div>
-                      <span className="text-blue-primary text-sm font-semibold uppercase tracking-wider mb-2 relative z-10">{person.role}</span>
-                      <h4 className="text-xl font-bold mb-1 text-black-main relative z-10">{person.name}</h4>
-                      <p className="text-sm text-zinc-500 relative z-10">{person.title}</p>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  ))}
               </div>
 
               {/* Connecting Line */}
@@ -377,46 +417,31 @@ export default function LandingPage() {
 
               {/* Admin, Interpreter & Teknisi */}
               <div className="relative flex flex-wrap justify-center gap-4 md:gap-8 w-full mt-6">
-                {[
-                  { role: "Admin", name: "Fadillah", title: "Admin", image: "https://i.pravatar.cc/150?img=20" },
-                  { role: "Interpreter", name: "Rahmat Fiyantiko", title: "Mandarin Specialist", image: "https://i.pravatar.cc/150?img=22" },
-                  { role: "Interpreter", name: "Aliffio", title: "Mandarin Specialist", image: "https://i.pravatar.cc/150?img=24" },
-                  { role: "Teknisi", name: "Dustin", title: "Teknisi Lapangan", image: "https://i.pravatar.cc/150?img=30" },
-                  { role: "Teknisi", name: "Rizal Mutaqien", title: "Teknisi Lapangan", image: "https://i.pravatar.cc/150?img=31" },
-                  { role: "Teknisi", name: "Alif Capslock", title: "Teknisi Lapangan", image: "https://i.pravatar.cc/150?img=32" },
-                  { role: "Teknisi", name: "Alif Aus", title: "Teknisi Lapangan", image: "https://i.pravatar.cc/150?img=33" },
-                  { role: "Teknisi", name: "Naufal Zha", title: "Teknisi Lapangan", image: "https://i.pravatar.cc/150?img=34" },
-                  { role: "Teknisi", name: "Isal", title: "Teknisi Lapangan", image: "https://i.pravatar.cc/150?img=35" },
-                  { role: "Teknisi", name: "Egi Yushis", title: "Teknisi Lapangan", image: "https://i.pravatar.cc/150?img=36" },
-                  { role: "Teknisi", name: "Moh Jalu", title: "Teknisi Lapangan", image: "https://i.pravatar.cc/150?img=37" },
-                  { role: "Teknisi", name: "Fatah Al", title: "Teknisi Lapangan", image: "https://i.pravatar.cc/150?img=38" },
-                  { role: "Teknisi", name: "Reino", title: "Teknisi Lapangan", image: "https://i.pravatar.cc/150?img=39" },
-                  { role: "Teknisi", name: "Imersto", title: "Teknisi Lapangan", image: "https://i.pravatar.cc/150?img=40" },
-                  { role: "Teknisi", name: "Putra Yarman", title: "Teknisi Lapangan", image: "https://i.pravatar.cc/150?img=41" },
-                  { role: "Teknisi", name: "Zidane", title: "Teknisi Lapangan", image: "https://i.pravatar.cc/150?img=42" }
-                ].map((person, idx) => (
-                  <motion.div
-                    key={`cnjo-team-${idx}`}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.1 + ((idx % 7) * 0.1) }}
-                    className="p-[1px] rounded-2xl bg-zinc-200 hover:bg-gradient-to-b hover:from-blue-primary/20 hover:to-zinc-200 w-48 z-10 transition-all duration-300 group cursor-pointer"
-                  >
-                    <div className="bg-white rounded-[1rem] p-5 h-full border border-white flex flex-col items-center text-center shadow-sm group-hover:border-blue-primary/20 transition-colors">
-                      <div className="relative w-20 h-20 mb-4">
-                        <img 
-                          src={person.image} 
-                          alt={person.name}
-                          className="w-full h-full object-cover rounded-full border-4 border-zinc-100 shadow-sm transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-2 group-hover:border-white group-hover:shadow-[0_10px_20px_rgba(86,196,189,0.15)] relative z-20"
-                        />
+                {(userData || [])
+                  .filter((u: any) => u.team === 'cnjo' && u.role?.toUpperCase() !== 'PROJECT MANAGER CNJO')
+                  .map((person: any, idx: number) => (
+                    <motion.div
+                      key={`cnjo-team-${person.name}-${idx}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.1 + ((idx % 7) * 0.1) }}
+                      className="p-[1px] rounded-2xl bg-zinc-200 hover:bg-gradient-to-b hover:from-blue-primary/20 hover:to-zinc-200 w-48 z-10 transition-all duration-300 group cursor-pointer"
+                    >
+                      <div className="bg-white rounded-[1rem] p-5 h-full border border-white flex flex-col items-center text-center shadow-sm group-hover:border-blue-primary/20 transition-colors">
+                        <div className="relative w-20 h-20 mb-4">
+                          <img
+                            src={person.foto_profile ? `http://localhost:8000/storage/${person.foto_profile}` : "https://i.pravatar.cc/150?img=40"}
+                            alt={person.name}
+                            className="w-full h-full object-cover rounded-full border-4 border-zinc-100 shadow-sm transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-2 group-hover:border-white group-hover:shadow-[0_10px_20px_rgba(86,196,189,0.15)] relative z-20"
+                          />
+                        </div>
+                        <span className="text-zinc-500 text-[10px] font-semibold uppercase tracking-wider mb-1">{person.role || 'Teknisi'}</span>
+                        <h4 className="text-base font-bold mb-1 text-black-main">{person.name}</h4>
+                        <p className="text-xs text-zinc-500">{person.description_profile || ''}</p>
                       </div>
-                      <span className="text-zinc-500 text-[10px] font-semibold uppercase tracking-wider mb-1">{person.role}</span>
-                      <h4 className="text-base font-bold mb-1 text-black-main">{person.name}</h4>
-                      <p className="text-xs text-zinc-500">{person.title}</p>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  ))}
               </div>
 
             </div>
