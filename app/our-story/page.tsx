@@ -59,7 +59,7 @@ export default function OurStoryPage() {
         year: s.time,
         title: s.title,
         description: s.description,
-        documentation: s.images?.map((img: any) => getStorageUrl(img.image_path)) || []
+        documentation: (s.images?.map((img: any) => getStorageUrl(img.image_path)) || []).filter((url: any): url is string => !!url)
       }))
     : fallbackStories;
 

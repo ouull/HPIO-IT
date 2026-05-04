@@ -92,10 +92,10 @@ export default function LandingPage() {
               </h2>
               <div className="space-y-6 text-zinc-400 text-lg leading-relaxed">
                 <p>
-                  {content?.about_items[0]?.description || 'HPIO serves as the critical nervous system of PT KCIC, engineered to ensure 24/7 reliability for high-speed rail operations. We do not just maintain systems; we guarantee uptime in an environment where milliseconds matter.'}
+                  {content?.about_items?.[0]?.description || 'HPIO serves as the critical nervous system of PT KCIC, engineered to ensure 24/7 reliability for high-speed rail operations. We do not just maintain systems; we guarantee uptime in an environment where milliseconds matter.'}
                 </p>
                 <p>
-                  {content?.about_items[0]?.description || 'Our operational mandate focuses on proactive monitoring, instantaneous anomaly detection, and rapid deployment of technical resolutions across all command and control layers.'}
+                  {content?.about_items?.[1]?.description || 'Our operational mandate focuses on proactive monitoring, instantaneous anomaly detection, and rapid deployment of technical resolutions across all command and control layers.'}
                 </p>
               </div>
             </motion.div>
@@ -111,11 +111,13 @@ export default function LandingPage() {
               <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-zinc-900 group shadow-2xl">
                 <div className="absolute inset-0 bg-blue-primary/10 mix-blend-overlay z-10 transition-colors duration-500 group-hover:bg-blue-primary/20"></div>
 
-                <img
-                  src={getStorageUrl(content?.about_image)}
-                  alt="Server Racks"
-                  className="w-full h-[400px] object-cover grayscale opacity-70 transition-transform duration-700 group-hover:scale-105"
-                />
+                {getStorageUrl(content?.about_image) && (
+                  <img
+                    src={getStorageUrl(content?.about_image)}
+                    alt="Server Racks"
+                    className="w-full h-[400px] object-cover grayscale opacity-70 transition-transform duration-700 group-hover:scale-105"
+                  />
+                )}
 
                 {/* Terminal Overlay */}
                 <div className="absolute bottom-6 left-6 right-6 bg-black/80 backdrop-blur-md border border-white/10 rounded-xl p-5 z-20 font-mono text-xs md:text-sm shadow-2xl">
@@ -180,7 +182,7 @@ export default function LandingPage() {
                   title: work.title,
                   description: work.description,
                   content: (
-                    <ImageCarousel images={work.images?.map((img: any) => getStorageUrl(img.image_path)) || []} />
+                    <ImageCarousel images={(work.images?.map((img: any) => getStorageUrl(img.image_path)) || []).filter((url: any): url is string => !!url)} />
                   ),
                 }));
               }
@@ -244,7 +246,7 @@ export default function LandingPage() {
                 title: item.title,
                 description: item.description,
                 content: (
-                  <ImageCarousel images={item.images?.map((img: any) => getStorageUrl(img)) || []} />
+                  <ImageCarousel images={(item.images?.map((img: any) => getStorageUrl(img)) || []).filter((url: any): url is string => !!url)} />
                 ),
               }));
             })()

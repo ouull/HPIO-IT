@@ -46,7 +46,7 @@ export const InternshipTimeline = () => {
         interns: item.members?.map((member: any) => ({
           name: member.name,
           role: member.job_desk,
-          image: member.image ? getStorageUrl(member.image) : "https://i.pravatar.cc/150?img=60"
+          image: (member.image && getStorageUrl(member.image)) || "https://i.pravatar.cc/150?img=60"
         })) || []
       }))
     : staticTimelineData;

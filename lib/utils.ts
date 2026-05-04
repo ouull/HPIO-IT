@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getStorageUrl(path: string | null | undefined) {
-  if (!path) return "";
+  if (!path) return undefined;
   if (path.startsWith("http")) return path;
   const baseUrl = process.env.NEXT_PUBLIC_STORAGE_URL || "http://localhost:8000/storage";
   return `${baseUrl}/${path.replace(/^\//, "")}`;
