@@ -11,7 +11,7 @@ export const Preloader = () => {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 2500);
-    
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -21,8 +21,8 @@ export const Preloader = () => {
         <motion.div
           key="preloader"
           initial={{ opacity: 1 }}
-          exit={{ 
-            opacity: 0, 
+          exit={{
+            opacity: 0,
             scale: 1.05,
             filter: "blur(10px)",
           }}
@@ -39,7 +39,7 @@ export const Preloader = () => {
             className="relative flex flex-col items-center z-10"
           >
             {/* Premium Typographic Logo */}
-            <motion.h1 
+            <motion.h1
               initial={{ letterSpacing: "0em", opacity: 0, filter: "blur(20px)", y: 30 }}
               animate={{ letterSpacing: "0.25em", opacity: 1, filter: "blur(0px)", y: 0 }}
               transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
@@ -47,12 +47,12 @@ export const Preloader = () => {
             >
               HPIO
             </motion.h1>
-            
+
             <motion.p
               initial={{ opacity: 0, filter: "blur(10px)", y: -10 }}
               animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
               transition={{ delay: 0.8, duration: 1, ease: "easeOut" }}
-              className="text-blue-primary text-sm md:text-base font-bold tracking-[0.4em] uppercase drop-shadow-[0_0_8px_rgba(86,196,189,0.5)] ml-[0.4em]"
+              className="text-blue-primary text-sm md:text-base font-bold tracking-[0.4em] uppercase drop-shadow-[0_0_8px_rgba(86,196,189,0.5)] ml-[0.4em] text-center"
             >
               IT Operations & Maintenance
             </motion.p>
