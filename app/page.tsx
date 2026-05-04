@@ -11,6 +11,7 @@ import { InternshipTimeline } from "@/components/InternshipTimeline";
 import * as LucideIcons from "lucide-react";
 import { ArrowRight } from "lucide-react";
 import { getData } from "@/services/fetchData"
+import { getStorageUrl } from "@/lib/utils";
 import Link from "next/link";
 
 export default function LandingPage() {
@@ -111,7 +112,7 @@ export default function LandingPage() {
                 <div className="absolute inset-0 bg-blue-primary/10 mix-blend-overlay z-10 transition-colors duration-500 group-hover:bg-blue-primary/20"></div>
 
                 <img
-                  src={content?.about_image}
+                  src={getStorageUrl(content?.about_image)}
                   alt="Server Racks"
                   className="w-full h-[400px] object-cover grayscale opacity-70 transition-transform duration-700 group-hover:scale-105"
                 />
@@ -179,7 +180,7 @@ export default function LandingPage() {
                   title: work.title,
                   description: work.description,
                   content: (
-                    <ImageCarousel images={work.images?.map((img: any) => `http://localhost:8000/storage/${img.image_path}`) || []} />
+                    <ImageCarousel images={work.images?.map((img: any) => getStorageUrl(img.image_path)) || []} />
                   ),
                 }));
               }
@@ -243,7 +244,7 @@ export default function LandingPage() {
                 title: item.title,
                 description: item.description,
                 content: (
-                  <ImageCarousel images={item.images || []} />
+                  <ImageCarousel images={item.images?.map((img: any) => getStorageUrl(img)) || []} />
                 ),
               }));
             })()
@@ -296,7 +297,7 @@ export default function LandingPage() {
                       <div className="absolute top-0 w-full h-1/3 bg-blue-primary/5 rounded-t-[1.4rem]"></div>
                       <div className="relative w-32 h-32 mb-6">
                         <img
-                          src={person.foto_profile ? `http://localhost:8000/storage/${person.foto_profile}` : "https://i.pravatar.cc/150?img=11"}
+                          src={person.foto_profile ? getStorageUrl(person.foto_profile) : "https://i.pravatar.cc/150?img=11"}
                           alt={person.name}
                           className="w-full h-full object-cover rounded-full border-4 border-white shadow-lg transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-4 group-hover:shadow-[0_10px_40px_rgba(86,196,189,0.3)] relative z-20"
                         />
@@ -328,7 +329,7 @@ export default function LandingPage() {
                     <div className="bg-zinc-50 rounded-[1.4rem] p-6 h-full border border-white flex flex-col items-center text-center shadow-sm relative overflow-hidden group-hover:bg-white group-hover:border-blue-primary/30 transition-colors">
                       <div className="relative w-24 h-24 mb-5">
                         <img
-                          src={person.foto_profile ? `http://localhost:8000/storage/${person.foto_profile}` : "https://i.pravatar.cc/150?img=14"}
+                          src={person.foto_profile ? getStorageUrl(person.foto_profile) : "https://i.pravatar.cc/150?img=14"}
                           alt={person.name}
                           className="w-full h-full object-cover rounded-full border-4 border-white shadow-md transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-3 group-hover:border-blue-primary/10 group-hover:shadow-[0_10px_30px_rgba(86,196,189,0.2)] relative z-20"
                         />
@@ -357,7 +358,7 @@ export default function LandingPage() {
                     <div className="bg-white rounded-[1rem] p-5 h-full border border-white flex flex-col items-center text-center shadow-sm group-hover:border-blue-primary/20 transition-colors">
                       <div className="relative w-20 h-20 mb-4">
                         <img
-                          src={person.foto_profile ? `http://localhost:8000/storage/${person.foto_profile}` : "https://i.pravatar.cc/150?img=60"}
+                          src={person.foto_profile ? getStorageUrl(person.foto_profile) : "https://i.pravatar.cc/150?img=60"}
                           alt={person.name}
                           className="w-full h-full object-cover rounded-full border-4 border-zinc-100 shadow-sm transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-2 group-hover:border-white group-hover:shadow-[0_10px_20px_rgba(86,196,189,0.15)] relative z-20"
                         />
@@ -399,7 +400,7 @@ export default function LandingPage() {
                         <div className="absolute top-0 w-full h-1/3 bg-blue-primary/5 rounded-t-[1.4rem]"></div>
                         <div className="relative w-32 h-32 mb-6">
                           <img
-                            src={person.foto_profile ? `http://localhost:8000/storage/${person.foto_profile}` : "https://i.pravatar.cc/150?img=12"}
+                            src={person.foto_profile ? getStorageUrl(person.foto_profile) : "https://i.pravatar.cc/150?img=12"}
                             alt={person.name}
                             className="w-full h-full object-cover rounded-full border-4 border-white shadow-lg transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-4 group-hover:shadow-[0_10px_40px_rgba(86,196,189,0.3)] relative z-20"
                           />
@@ -431,7 +432,7 @@ export default function LandingPage() {
                       <div className="bg-white rounded-[1rem] p-5 h-full border border-white flex flex-col items-center text-center shadow-sm group-hover:border-blue-primary/20 transition-colors">
                         <div className="relative w-20 h-20 mb-4">
                           <img
-                            src={person.foto_profile ? `http://localhost:8000/storage/${person.foto_profile}` : "https://i.pravatar.cc/150?img=40"}
+                            src={person.foto_profile ? getStorageUrl(person.foto_profile) : "https://i.pravatar.cc/150?img=40"}
                             alt={person.name}
                             className="w-full h-full object-cover rounded-full border-4 border-zinc-100 shadow-sm transition-all duration-500 ease-out group-hover:scale-125 group-hover:-translate-y-2 group-hover:border-white group-hover:shadow-[0_10px_20px_rgba(86,196,189,0.15)] relative z-20"
                           />

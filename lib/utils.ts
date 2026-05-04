@@ -4,3 +4,10 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
+export function getStorageUrl(path: string | null | undefined) {
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  const baseUrl = process.env.NEXT_PUBLIC_STORAGE_URL || "http://localhost:8000/storage";
+  return `${baseUrl}/${path.replace(/^\//, "")}`;
+}

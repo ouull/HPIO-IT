@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { getData } from "@/services/fetchData";
+import { getStorageUrl } from "@/lib/utils";
 
 const staticTimelineData = [
   {
@@ -45,7 +46,7 @@ export const InternshipTimeline = () => {
         interns: item.members?.map((member: any) => ({
           name: member.name,
           role: member.job_desk,
-          image: member.image ? `http://localhost:8000/storage/${member.image}` : "https://i.pravatar.cc/150?img=60"
+          image: member.image ? getStorageUrl(member.image) : "https://i.pravatar.cc/150?img=60"
         })) || []
       }))
     : staticTimelineData;

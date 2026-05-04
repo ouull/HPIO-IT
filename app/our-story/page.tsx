@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { ImageCarousel } from "@/components/ui/ImageCarousel";
 import { getData } from "@/services/fetchData";
+import { getStorageUrl } from "@/lib/utils";
 
 // Data Sejarah Proyek Departemen
 const fallbackStories = [
@@ -58,7 +59,7 @@ export default function OurStoryPage() {
         year: s.time,
         title: s.title,
         description: s.description,
-        documentation: s.images?.map((img: any) => `http://localhost:8000/storage/${img.image_path}`) || []
+        documentation: s.images?.map((img: any) => getStorageUrl(img.image_path)) || []
       }))
     : fallbackStories;
 
